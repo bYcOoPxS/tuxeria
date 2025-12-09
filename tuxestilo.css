@@ -1,0 +1,151 @@
+/* ===================== General ===================== */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #e6f0fa; /* azul muy suave */
+    margin: 0;
+    padding: 0;
+}
+
+/* ===================== Contenedores ===================== */
+/* Contenedor Login */
+.container {
+    background-color: #f0f7ff; /* azul claro */
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    margin: 5rem auto; /* centrado vertical/horizontal aproximado */
+}
+
+/* Contenedor Panel (botones) */
+.container-panel {
+    background-color: #f0f7ff;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: center;   /* botones centrados */
+    width: 60%;           
+    max-width: 600px;
+    margin: 2rem auto;    /* centrado horizontal y margen arriba/abajo */
+}
+
+/* Contenedor Registrar Cliente */
+.container-rcliente {
+    background-color: #f0f7ff;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: left;           
+    width: 60%;                 
+    max-width: 700px;
+    margin: 2rem auto;          
+}
+
+/* ===================== Logos ===================== */
+.logo, .logo-panel {
+    width: 200px;
+    margin-bottom: 1.5rem;
+}
+
+.logo-rcliente {
+    width: 180px;
+    margin-bottom: 2rem;
+}
+
+/* ===================== Formularios ===================== */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    margin-top: 0.5rem;
+    margin-bottom: 0.2rem;
+    font-weight: bold;
+    color: #1565c0; /* azul intenso */
+}
+
+form input[type="text"],
+form input[type="password"],
+form input[type="email"],
+form input[type="number"] {
+    padding: 0.7rem;
+    border-radius: 5px;
+    border: 1px solid #90caf9; /* azul suave */
+    font-size: 1.1rem;
+}
+
+form input[type="submit"] {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #2196f3; /* azul principal */
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+form input[type="submit"]:hover {
+    background-color: #1565c0; /* azul más oscuro */
+    transform: scale(1.03);
+}
+
+/* Formularios específicos */
+form.rcliente-form label {
+    margin-top: 0.8rem;
+    margin-bottom: 0.3rem;
+    font-size: 1.2rem;
+}
+
+form.rcliente-form input[type="submit"] {
+    margin-top: 1.5rem;
+}
+
+/* ===================== Botones Panel ===================== */
+.button {
+    display: inline-block;   /* permite centrado */
+    width: 80%;              /* ocupan gran parte del contenedor */
+    max-width: 400px;
+    padding: 1rem;
+    margin: 1rem auto;       /* centrado horizontal y separación */
+    background-color: #64b5f6; /* azul claro */
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.button:hover {
+    background-color: #2196f3;
+    transform: scale(1.05);
+}
+
+/* ===================== Mensajes ===================== */
+.error, .mensaje {
+    color: #0d47a1; /* azul oscuro */
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}
+
+/* ===================== Encabezados ===================== */
+.panel-title {
+    color: #1565c0;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* ===================== Ajustes Responsivos ===================== */
+@media screen and (max-width: 768px) {
+    .container-panel, .container-rcliente {
+        width: 90%;
+    }
+
+    .button {
+        width: 90%;
+    }
+}
