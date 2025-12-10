@@ -24,11 +24,7 @@ $insert_query = mysqli_query($konexioa, $sql_insert);
 
 if ($insert_query){
     echo "<h1>Cliente insertado</h1>";
-    $sql_compro = "SELECT * from Cliente where DNI = '$dni';";
-    $lerroak_compro = mysqli_query($konexioa, $sql_compro);
-    $resultados_compro = mysqli_fetch_assoc($lerroak_compro);
-
-    echo "El cliente ".$resultados_compro['nombre'],", con DNI ".$resultados_compro['DNI']." ha sido correctamente registrado";
+    echo "El cliente ".$nombre.", con DNI ".$dni." ha sido correctamente registrado en la BBDD";
 } else {
     $mensaje = "Error al insertar";
 }
@@ -63,10 +59,10 @@ if ($insert_query){
         <input type="text" name="pob" id="rcliente-pob" required>
 
         <label for="rcliente-tlf">Telefono:</label>
-        <input type="number" name="tlf" id="rcliente-tlf">
+        <input type="number" name="tlf" id="rcliente-tlf" required>
 
         <label for="rcliente-email">Email:</label>
-        <input type="email" name="email" id="rcliente-email">
+        <input type="email" name="email" id="rcliente-email" required>
 
         <input type="submit" name="brcliente" value="Registrar Cliente">
     </form>
