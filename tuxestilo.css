@@ -4,44 +4,45 @@ body {
     background-color: #e6f0fa; /* azul muy suave */
     margin: 0;
     padding: 0;
+    background-image: url('./images/background.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 /* ===================== Contenedores ===================== */
-/* Contenedor Login */
-.container {
-    background-color: #f0f7ff; /* azul claro */
+.container, 
+.container-panel,
+.container-rcliente,
+.container-rpizza,
+.container-rpedido {
+    background-color: rgba(240, 247, 255, 0.95); /* azul claro semi-transparente */
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     text-align: center;
-    width: 90%;
-    max-width: 400px;
-    margin: 5rem auto;
-}
-
-/* Contenedor Panel (botones) */
-.container-panel {
-    background-color: #f0f7ff;
-    padding: 3rem;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    text-align: center;
-    width: 60%;
-    max-width: 600px;
-    margin: 2rem auto;
-}
-
-/* Contenedor Registrar Cliente */
-.container-rcliente,
-.container-rpizza { /* Usamos las mismas reglas para pizza */
-    background-color: #f0f7ff;
-    padding: 3rem;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    text-align: left;
     width: 60%;
     max-width: 700px;
     margin: 2rem auto;
+}
+
+/* Ajuste específico para login */
+.container {
+    max-width: 400px;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Panel botones */
+.container-panel {
+    max-width: 600px;
+}
+
+/* Formularios tipo admin (clientes, pizzas, pedidos) */
+.container-rcliente,
+.container-rpizza,
+.container-rpedido {
+    text-align: left;
 }
 
 /* ===================== Logos ===================== */
@@ -51,22 +52,28 @@ body {
 }
 
 .logo-rcliente,
-.logo-rpizza { /* Mismo estilo de logo */
-    width: 180px;
+.logo-rpizza,
+.logo-rpedido {
+    width: 180px; /* mismo tamaño en todos */
     margin-bottom: 2rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* ===================== Formularios ===================== */
 form,
 form.rcliente-form,
-form.rpizza-form { /* mismos estilos para ambos formularios */
+form.rpizza-form,
+form.rpedido-form {
     display: flex;
     flex-direction: column;
 }
 
 form label,
 form.rcliente-form label,
-form.rpizza-form label {
+form.rpizza-form label,
+form.rpedido-form label {
     margin-top: 0.8rem;
     margin-bottom: 0.3rem;
     font-weight: bold;
@@ -79,16 +86,43 @@ form input[type="password"],
 form input[type="email"],
 form input[type="number"],
 form.rcliente-form input,
-form.rpizza-form input {
+form.rpizza-form input,
+form.rpedido-form input {
     padding: 0.7rem;
     border-radius: 5px;
     border: 1px solid #90caf9;
     font-size: 1.1rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
+/* ===================== Inputs de Pizzas ===================== */
+.pizza-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    padding: 0.3rem 0;
+    border-bottom: 1px dashed #90caf9;
+}
+
+.pizza-item label {
+    font-weight: bold;
+    color: #0d47a1;
+    font-size: 1.1rem;
+}
+
+.pizza-item input[type="number"] {
+    width: 70px;
+    text-align: center;
+}
+
+/* ===================== Botones ===================== */
 form input[type="submit"],
 form.rcliente-form input[type="submit"],
-form.rpizza-form input[type="submit"] {
+form.rpizza-form input[type="submit"],
+form.rpedido-form input[type="submit"],
+.button {
     margin-top: 1.5rem;
     padding: 1rem;
     border: none;
@@ -102,29 +136,22 @@ form.rpizza-form input[type="submit"] {
 
 form input[type="submit"]:hover,
 form.rcliente-form input[type="submit"]:hover,
-form.rpizza-form input[type="submit"]:hover {
+form.rpizza-form input[type="submit"]:hover,
+form.rpedido-form input[type="submit"]:hover,
+.button:hover {
     background-color: #1565c0;
     transform: scale(1.03);
 }
 
-/* ===================== Botones Panel ===================== */
+/* Botones de panel específicos */
 .button {
     display: inline-block;
     width: 80%;
     max-width: 400px;
-    padding: 1rem;
     margin: 1rem auto;
-    background-color: #64b5f6;
-    color: white;
     text-decoration: none;
     border-radius: 8px;
     font-size: 1.1rem;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-.button:hover {
-    background-color: #2196f3;
-    transform: scale(1.05);
 }
 
 /* ===================== Mensajes ===================== */
@@ -139,17 +166,36 @@ form.rpizza-form input[type="submit"]:hover {
     color: #1565c0;
     font-size: 2rem;
     margin-bottom: 1rem;
+    text-align: center;
 }
 
 /* ===================== Ajustes Responsivos ===================== */
 @media screen and (max-width: 768px) {
+    .container,
     .container-panel,
     .container-rcliente,
-    .container-rpizza {
+    .container-rpizza,
+    .container-rpedido {
         width: 90%;
     }
 
     .button {
         width: 90%;
     }
+
+    .pizza-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pizza-item input[type="number"] {
+        width: 100%;
+        margin-top: 0.3rem;
+    }
+}
+
+/* ===================== Inputs específicos ===================== */
+/* DNI del pedido con separación extra */
+#rpedido-dni {
+    margin-bottom: 1.5rem;
 }

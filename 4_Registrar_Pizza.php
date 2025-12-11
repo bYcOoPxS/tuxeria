@@ -1,11 +1,7 @@
 <?php
-$mensaje = "";
+    require_once('./mysql_connect.php');
+    $mensaje = "";
 if (isset($_POST['brpizza'])){
-
-    define('zerbitzaria', 'localhost');
-    define('erabiltzailea', 'root');                      // CONSTANTES PARA LA CONEXION A LA BBDD
-    define('pasahitza', '');
-    define('db', 'tuxeria');
 
     $konexioa = mysqli_connect(zerbitzaria, erabiltzailea, pasahitza, db);
     mysqli_set_charset($konexioa, 'utf8');

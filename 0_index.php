@@ -1,27 +1,22 @@
 <?php
 // Lógica PHP primero
-define('zerbitzaria', 'localhost');
-define('erabiltzailea', 'root');                      // CONSTANTES PARA LA CONEXION A LA BBDD
-define('pasahitza', '');
-define('db', 'tuxeria');
+require_once('./tuxconexion.php');
 
 $mensaje_error = "";
 
 if(isset($_POST['blogin'])){
-    $konexioa = mysqli_connect(zerbitzaria, erabiltzailea, pasahitza, db);
-    mysqli_set_charset($konexioa, 'utf8');
-
     $user = $_POST['user'];
     $pass = $_POST['pass'];
 
-    $sql_login = "SELECT * FROM users WHERE username = '$user';";
-    $resultado = mysqli_fetch_assoc(mysqli_query($konexioa, $sql_login));
+    try {
+        
+    $konexioa = mysqli_connect(zerbitzaria, $user, $pass, db);
+    mysqli_set_charset($konexioa, 'utf8');
 
-    if($resultado && password_verify($pass, $resultado['password'])){
-        // Redirigir al panel ANTES de HTML
         header("Location: ./1_Panel.php");
         exit;
-    } else {
+    } 
+    catch(mysqli_sql_exception) {
         $mensaje_error = "Erabiltzailea edo pasahitza txarto";
     }
 }
