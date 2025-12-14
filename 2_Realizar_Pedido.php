@@ -1,49 +1,110 @@
 <?php
-// Primero el insert de Pedido y despues LineaPedido
+// Conexión a la base de datos
 require_once('./mysql_connect.php');
 $mensaje = "";
 $konexioa = mysqli_connect(zerbitzaria, erabiltzailea, pasahitza, db);
 mysqli_set_charset($konexioa, 'utf8');
 
-// Recuperamos las pizzas y precios y generamos safe_to_orig
+// Recuperamos todas las pizzas con sus precios
 $sql_pizzas = "SELECT nom_pizza, precio FROM Pizza";
 $lerroak_pizza = mysqli_query($konexioa, $sql_pizzas);
 
+// Arrays:
+// $precios        => precio de cada pizza según el nombre real
+// $safe_to_orig   => mapeo de nombres del formulario a los nombres reales
 $precios = [];
 $safe_to_orig = [];
+
 while($apizza = mysqli_fetch_assoc($lerroak_pizza)){
     $nom_pizza = $apizza['nom_pizza'];
     $precio = $apizza['precio'];
 
+    // Nombre del input seguro (sin espacios)
     $safe_name = str_replace(' ', '_', $nom_pizza);
 
+    // Guardamos precio y mapeo
     $precios[$nom_pizza] = $precio;
     $safe_to_orig[$safe_name] = $nom_pizza;
 }
 
-// Procesamos el formulario
+
+
+// Cuando se envía el formulario
 if (isset($_POST['brpedido'])){
+
     $dni = $_POST['dni'];
+
+    // Importe total del pedido
     $importe = 0;
 
+    // Array donde guardaremos todas las líneas de pedido
+    // Cada elemento será: ['nom_pizza' => ..., 'cantidad' => ...]
+    $lineasPedido = [];
+
+
+
+    // 1. RECORREMOS EL FORMULARIO Y CONSTRUIMOS EL PEDIDO
     foreach ($_POST as $valorname => $cantidad){
+
+        // Ignoramos DNI y el botón del formulario
         if ($valorname == 'dni' || $valorname == 'brpedido') continue;
+
+        // Si no es un input válido (pizza real), lo saltamos
         if (!isset($safe_to_orig[$valorname])) continue;
 
-        $cantidadPizzas = $cantidad;
+        // Convertimos cantidad a número entero
+        $cantidad_int = intval($cantidad);
+
+        // Si es 0 o negativa, no se añade al pedido
+        if ($cantidad_int <= 0) continue;
+
+        // Obtenemos el nombre original de la pizza
         $nom_original = $safe_to_orig[$valorname];
-        $importe += $precios[$nom_original] * intval($cantidad);
+
+        // Sumamos al importe total
+        $importe += $precios[$nom_original] * $cantidad_int;
+
+        // Guardamos la línea en el array para luego insertarla
+        $lineasPedido[] = [
+            'nom_pizza' => $nom_original,
+            'cantidad'  => $cantidad_int
+        ];
     }
 
-    $sql_insert_pedido = "INSERT into Pedido (dni_cliente, importe) values ('$dni', $importe);";
-    $lerroak_pedido = mysqli_query($konexioa, $sql_insert_pedido);
-    $pedido_id = intval(mysqli_insert_id($konexioa));
-    
-    $sql_insert_lineapedido = "INSERT into LineaPedido (num_pedido, nom_pizza, unidades) values ($pedido_id, '$nom_original', $cantidadPizzas);";
-    $lerroak_lineapedido = mysqli_query($konexioa, $sql_insert_lineapedido);
 
-    if($lerroak_pedido && $lerroak_lineapedido){
-        echo "Pedido insertado correctamente";
+
+    // 2. INSERTAMOS EL PEDIDO EN LA TABLA PEDIDO
+    $sql_insert_pedido = "
+        INSERT into Pedido (dni_cliente, importe)
+        values ('$dni', $importe);
+    ";
+
+    $lerroak_pedido = mysqli_query($konexioa, $sql_insert_pedido);
+
+    // Recuperamos el ID del pedido recién insertado
+    $pedido_id = mysqli_insert_id($konexioa);
+
+
+
+    // 3. INSERTAMOS TODAS LAS LÍNEAS DEL PEDIDO UNA A UNA
+    foreach ($lineasPedido as $linea) {
+
+        $nom_pizza = $linea['nom_pizza'];
+        $cantidad  = $linea['cantidad'];
+
+        $sql_insert_lineapedido = "
+            INSERT into LineaPedido (num_pedido, nom_pizza, unidades)
+            values ($pedido_id, '$nom_pizza', $cantidad);
+        ";
+
+        mysqli_query($konexioa, $sql_insert_lineapedido);
+    }
+
+
+
+    // Mensaje final
+    if($lerroak_pedido){
+        echo "Pedido insertado correctamente<br>";
     } else {
         $mensaje = "Error al insertar";
     }

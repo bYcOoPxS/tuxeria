@@ -15,7 +15,8 @@ body {
 .container-panel,
 .container-rcliente,
 .container-rpizza,
-.container-rpedido {
+.container-rpedido,
+.container-conalta { /* ← añadido */
     background-color: rgba(240, 247, 255, 0.95); /* azul claro semi-transparente */
     padding: 2rem;
     border-radius: 10px;
@@ -45,6 +46,12 @@ body {
     text-align: left;
 }
 
+/* Ajuste específico para el formulario de comprobar cliente */
+.container-conalta { /* ← añadido */
+    max-width: 500px;
+    text-align: center;
+}
+
 /* ===================== Logos ===================== */
 .logo, .logo-panel {
     width: 200px;
@@ -53,8 +60,9 @@ body {
 
 .logo-rcliente,
 .logo-rpizza,
-.logo-rpedido {
-    width: 180px; /* mismo tamaño en todos */
+.logo-rpedido,
+.logo-rcliente { /* ← aplica para tu archivo nuevo */
+    width: 180px;
     margin-bottom: 2rem;
     display: block;
     margin-left: auto;
@@ -65,7 +73,8 @@ body {
 form,
 form.rcliente-form,
 form.rpizza-form,
-form.rpedido-form {
+form.rpedido-form,
+.conalta-form { /* ← añadido */
     display: flex;
     flex-direction: column;
 }
@@ -73,7 +82,8 @@ form.rpedido-form {
 form label,
 form.rcliente-form label,
 form.rpizza-form label,
-form.rpedido-form label {
+form.rpedido-form label,
+.conalta-form label { /* ← añadido */
     margin-top: 0.8rem;
     margin-bottom: 0.3rem;
     font-weight: bold;
@@ -87,7 +97,8 @@ form input[type="email"],
 form input[type="number"],
 form.rcliente-form input,
 form.rpizza-form input,
-form.rpedido-form input {
+form.rpedido-form input,
+.conalta-form input[type="text"] { /* ← añadido */
     padding: 0.7rem;
     border-radius: 5px;
     border: 1px solid #90caf9;
@@ -103,7 +114,7 @@ form.rpedido-form input {
     align-items: center;
     margin-top: 0.5rem;
     padding: 0.3rem 0;
-    border-bottom: 1px dashed #90caf9;
+    border-bottom: 1 dashed #90caf9;
 }
 
 .pizza-item label {
@@ -122,7 +133,8 @@ form input[type="submit"],
 form.rcliente-form input[type="submit"],
 form.rpizza-form input[type="submit"],
 form.rpedido-form input[type="submit"],
-.button {
+.button,
+.conalta-form input[type="submit"] { /* ← añadido */
     margin-top: 1.5rem;
     padding: 1rem;
     border: none;
@@ -138,12 +150,13 @@ form input[type="submit"]:hover,
 form.rcliente-form input[type="submit"]:hover,
 form.rpizza-form input[type="submit"]:hover,
 form.rpedido-form input[type="submit"]:hover,
-.button:hover {
+.button:hover,
+.conalta-form input[type="submit"]:hover { /* ← añadido */
     background-color: #1565c0;
     transform: scale(1.03);
 }
 
-/* Botones de panel específicos */
+/* Botones panel */
 .button {
     display: inline-block;
     width: 80%;
@@ -161,6 +174,21 @@ form.rpedido-form input[type="submit"]:hover,
     font-size: 1.1rem;
 }
 
+/* Nuevos mensajes de tu archivo */
+.mensaje-exito { /* ← añadido */
+    color: green;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.mensaje-error { /* ← añadido */
+    color: red;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
 /* ===================== Encabezados ===================== */
 .panel-title {
     color: #1565c0;
@@ -175,7 +203,8 @@ form.rpedido-form input[type="submit"]:hover,
     .container-panel,
     .container-rcliente,
     .container-rpizza,
-    .container-rpedido {
+    .container-rpedido,
+    .container-conalta { /* ← añadido */
         width: 90%;
     }
 
@@ -195,7 +224,6 @@ form.rpedido-form input[type="submit"]:hover,
 }
 
 /* ===================== Inputs específicos ===================== */
-/* DNI del pedido con separación extra */
 #rpedido-dni {
     margin-bottom: 1.5rem;
 }
