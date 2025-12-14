@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevBlog Eneko Martinez - Docker Tuxeria</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <header>
+        <h1>DevBlog Eneko Martinez</h1>
+        <p>Mis aportaciones para el proyecto <strong>Tuxeria</strong></p>
+    </header>
+
+    <main>
+        <article>
+            <h2>Integración de Docker para Tuxeria</h2>
+            <p class="date">14 de diciembre de 2025</p>
+            <p>
+                Para facilitar las demos y mantener un entorno controlado, he configurado Tuxeria usando <strong>Docker</strong> y <strong>Docker Compose</strong>.  
+                Esto permite levantar todo el proyecto con un solo comando y garantiza que la base de datos y el servidor web estén sincronizados y aislados del sistema host.
+            </p>
+            <h3>Servicios</h3>
+            <ul>
+                <li><strong>tuxeria_db:</strong> contenedor MySQL 8 con la base de datos del proyecto.</li>
+                <li><strong>tuxeria_web:</strong> contenedor PHP 8.2 + Apache que sirve los archivos de Tuxeria.</li>
+            </ul>
+            <h3>Volúmenes</h3>
+            <p>
+                El proyecto está completamente sincronizado con el contenedor web mediante volúmenes:
+            </p>
+            <pre><code>./:/var/www/html</code></pre>
+            <p>
+                Esto permite que cualquier cambio en el proyecto local se refleje automáticamente en el contenedor.
+            </p>
+            <h3>Conexión PHP → MySQL</h3>
+            <p>
+                Dentro del contenedor web, la conexión se realiza usando el nombre del servicio MySQL definido en Docker Compose:
+            </p>
+            <pre><code>$konexioa = mysqli_connect('tuxeria_db', 'root', 'rootpass', 'tuxeria');</code></pre>
+            <h3>Comandos para levantar y detener</h3>
+            <p>
+                Con Docker Compose, el proyecto se levanta y detiene fácilmente:
+            </p>
+            <pre><code>docker-compose up -d --build
+docker-compose down</code></pre>
+            <p>
+                Esto facilita la demostración del proyecto sin tocar la instalación local de PHP o MySQL.
+            </p>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Mi DevBlog | Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

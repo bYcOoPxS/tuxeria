@@ -1,0 +1,118 @@
+/* ===================== Reset ===================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ===================== General ===================== */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f7fb;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* ===================== Header ===================== */
+header {
+    background-color: #1565c0;
+    color: white;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+}
+
+header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* ===================== Main ===================== */
+main {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* ===================== Artículos ===================== */
+article,
+section {
+    background-color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+article h2,
+section h2 {
+    color: #1565c0;
+    margin-bottom: 0.5rem;
+}
+
+.date {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 1rem;
+}
+
+/* ===================== Texto ===================== */
+p {
+    margin-bottom: 1rem;
+}
+
+ul {
+    margin-left: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+ul li {
+    margin-bottom: 0.4rem;
+}
+
+code {
+    background-color: #eef3fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* ===================== Enlaces ===================== */
+a {
+    color: #1565c0;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 1rem;
+}
+
+/* ===================== Footer ===================== */
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    background-color: #e3eaf5;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* ===================== Responsive ===================== */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    main {
+        margin: 1rem;
+    }
+}

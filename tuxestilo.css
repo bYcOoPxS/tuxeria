@@ -16,7 +16,7 @@ body {
 .container-rcliente,
 .container-rpizza,
 .container-rpedido,
-.container-conalta { /* ← añadido */
+.container-conalta {
     background-color: rgba(240, 247, 255, 0.95); /* azul claro semi-transparente */
     padding: 2rem;
     border-radius: 10px;
@@ -27,27 +27,7 @@ body {
     margin: 2rem auto;
 }
 
-/* Ajuste específico para login */
-.container {
-    max-width: 400px;
-    padding: 2rem;
-    text-align: center;
-}
-
-/* Panel botones */
-.container-panel {
-    max-width: 600px;
-}
-
-/* Formularios tipo admin (clientes, pizzas, pedidos) */
-.container-rcliente,
-.container-rpizza,
-.container-rpedido {
-    text-align: left;
-}
-
-/* Ajuste específico para el formulario de comprobar cliente */
-.container-conalta { /* ← añadido */
+.container-conalta {
     max-width: 500px;
     text-align: center;
 }
@@ -61,7 +41,7 @@ body {
 .logo-rcliente,
 .logo-rpizza,
 .logo-rpedido,
-.logo-rcliente { /* ← aplica para tu archivo nuevo */
+.logo-rcliente {
     width: 180px;
     margin-bottom: 2rem;
     display: block;
@@ -74,7 +54,7 @@ form,
 form.rcliente-form,
 form.rpizza-form,
 form.rpedido-form,
-.conalta-form { /* ← añadido */
+.conalta-form {
     display: flex;
     flex-direction: column;
 }
@@ -83,7 +63,7 @@ form label,
 form.rcliente-form label,
 form.rpizza-form label,
 form.rpedido-form label,
-.conalta-form label { /* ← añadido */
+.conalta-form label {
     margin-top: 0.8rem;
     margin-bottom: 0.3rem;
     font-weight: bold;
@@ -98,7 +78,7 @@ form input[type="number"],
 form.rcliente-form input,
 form.rpizza-form input,
 form.rpedido-form input,
-.conalta-form input[type="text"] { /* ← añadido */
+.conalta-form input[type="text"] {
     padding: 0.7rem;
     border-radius: 5px;
     border: 1px solid #90caf9;
@@ -114,7 +94,7 @@ form.rpedido-form input,
     align-items: center;
     margin-top: 0.5rem;
     padding: 0.3rem 0;
-    border-bottom: 1 dashed #90caf9;
+    border-bottom: 1px dashed #90caf9;
 }
 
 .pizza-item label {
@@ -134,7 +114,7 @@ form.rcliente-form input[type="submit"],
 form.rpizza-form input[type="submit"],
 form.rpedido-form input[type="submit"],
 .button,
-.conalta-form input[type="submit"] { /* ← añadido */
+.conalta-form input[type="submit"] {
     margin-top: 1.5rem;
     padding: 1rem;
     border: none;
@@ -151,7 +131,7 @@ form.rcliente-form input[type="submit"]:hover,
 form.rpizza-form input[type="submit"]:hover,
 form.rpedido-form input[type="submit"]:hover,
 .button:hover,
-.conalta-form input[type="submit"]:hover { /* ← añadido */
+.conalta-form input[type="submit"]:hover {
     background-color: #1565c0;
     transform: scale(1.03);
 }
@@ -174,19 +154,49 @@ form.rpedido-form input[type="submit"]:hover,
     font-size: 1.1rem;
 }
 
-/* Nuevos mensajes de tu archivo */
-.mensaje-exito { /* ← añadido */
+.mensaje-exito {
     color: green;
     font-weight: bold;
     font-size: 1.2rem;
     margin-bottom: 1rem;
 }
 
-.mensaje-error { /* ← añadido */
+.mensaje-error {
     color: red;
     font-weight: bold;
     font-size: 1.2rem;
     margin-bottom: 1rem;
+}
+
+/* ===================== Navbar derecha ===================== */
+.navbar-derecha {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(240, 247, 255, 0.9);
+    padding: 1rem;
+    border-radius: 8px 0 0 8px;
+    box-shadow: -4px 4px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.navbar-derecha a {
+    margin: 0.5rem 0;
+    padding: 0.5rem 1rem;
+    background-color: #2196f3;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.navbar-derecha a:hover {
+    background-color: #1565c0;
 }
 
 /* ===================== Encabezados ===================== */
@@ -204,7 +214,7 @@ form.rpedido-form input[type="submit"]:hover,
     .container-rcliente,
     .container-rpizza,
     .container-rpedido,
-    .container-conalta { /* ← añadido */
+    .container-conalta {
         width: 90%;
     }
 
@@ -220,6 +230,21 @@ form.rpedido-form input[type="submit"]:hover,
     .pizza-item input[type="number"] {
         width: 100%;
         margin-top: 0.3rem;
+    }
+
+    /* Navbar derecha en móviles */
+    .navbar-derecha {
+        position: static;
+        transform: none;
+        flex-direction: row;
+        justify-content: center;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        box-shadow: none;
+    }
+
+    .navbar-derecha a {
+        margin: 0 0.5rem;
     }
 }
 
