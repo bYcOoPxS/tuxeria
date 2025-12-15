@@ -51,6 +51,7 @@ if (isset($_POST['brpizza'])){
 
         <input type="submit" name="brpizza" value="Registrar Pizza">
     </form>
+    <a href="./1_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
 </div>
 </body>
 </html>

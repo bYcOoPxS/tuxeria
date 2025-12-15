@@ -62,6 +62,7 @@ if ($insert_query){
 
         <input type="submit" name="brcliente" value="Registrar Cliente">
     </form>
+    <a href="./1_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
 </div>
 </body>
 </html>

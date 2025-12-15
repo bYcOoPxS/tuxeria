@@ -142,6 +142,7 @@ if (isset($_POST['brpedido'])){
             <br>
             <input type="submit" name="brpedido" value="Eskaera egin">
         </form>
+        <a href="./1_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
     </div>
 </body>
 </html>

@@ -57,7 +57,7 @@ if (isset($_POST['bconalta'])){
         <input type="submit" name="bconalta" value="Comprobar Cliente" class="button">
     </form>
 
-    <a href="./1_panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
+    <a href="./1_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
 
 </div>
 
