@@ -1,6 +1,7 @@
 <?php
     require_once('./mysql_connect.php');
-    $mensaje = "";
+    $mensaje_exito = "";
+    $mensaje_error = "";
 if (isset($_POST['brcliente'])){
 
     $konexioa = mysqli_connect(zerbitzaria, erabiltzailea, pasahitza, db);
@@ -19,10 +20,9 @@ $sql_insert = "INSERT into Cliente (DNI, nombre, direccion, poblacion, telefono,
 $insert_query = mysqli_query($konexioa, $sql_insert);
 
 if ($insert_query){
-    echo "<h1>Cliente insertado</h1>";
-    echo "El cliente ".$nombre.", con DNI ".$dni." ha sido correctamente registrado en la BBDD";
+    $mensaje_exito = "CLIENTE INSERTADO!<br>El cliente ".$nombre.", con DNI ".$dni." ha sido correctamente registrado en la BBDD";
 } else {
-    $mensaje = "Error al insertar";
+    $mensaje_error = "ERROR AL INSERTAR EL CLIENTE!";
 }
 
 }
@@ -38,8 +38,14 @@ if ($insert_query){
 <body>
     <div class="container-rcliente">
     <img src="./images/tuxxeria_blue.png" alt="Tuxeria Logo" class="logo-rcliente">
-
-    <?php if($mensaje) echo "<p class='mensaje'>$mensaje</p>"; ?>
+<?php
+    if ($mensaje_exito) {
+            echo "<p class='mensaje-exito'>$mensaje_exito</p>";
+        }
+        if ($mensaje_error) {
+            echo "<p class='mensaje-error'>$mensaje_error</p>";
+        }
+?>
 
     <form class="rcliente-form" action="#" method="post">
         <label for="rcliente-dni">DNI:</label>

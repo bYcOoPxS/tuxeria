@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevBlog Eneko Martinez - Integración de Samba y RSAT</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <header>
+        <h1>DevBlog Eneko Martinez</h1>
+        <p>Mis aportaciones para el proyecto <strong>Tuxeria</strong></p>
+    </header>
+
+    <main>
+        <article>
+            <h2>Integración de un dominio con Samba y gestión con RSAT</h2>
+            <p class="date">16 de diciembre de 2025</p>
+
+            <p>
+                Durante el desarrollo de Tuxeria, necesitaba contar con un entorno controlado de Windows Server para la gestión de usuarios y políticas de red.
+                En lugar de instalar un dominio completo en Windows de prueba, decidí aprovechar <strong>Samba</strong> en Linux para simular un Active Directory, y luego gestionar los usuarios desde mi estación Windows con <strong>RSAT</strong> (Remote Server Administration Tools).
+            </p>
+
+            <h3>Configurando Samba como controlador de dominio</h3>
+            <p>
+                La experiencia fue muy instructiva. Primero, configuré un servidor Ubuntu con Samba, definiendo el nombre del dominio, la contraseña de administrador y los ajustes de DNS integrados.
+                Gracias a Samba, el servidor actuaba prácticamente como un <em>Active Directory real</em>, lo que me permitió crear usuarios, grupos y unidades organizativas sin depender de un Windows Server completo.
+            </p>
+
+            <ul>
+                <li>Samba ofrece compatibilidad con protocolos de AD, por lo que los clientes Windows pueden unirse al dominio.</li>
+                <li>Se pueden crear usuarios y contraseñas que luego funcionan en cualquier máquina unida al dominio.</li>
+                <li>Se pueden aplicar políticas básicas de seguridad y permisos en carpetas compartidas.</li>
+            </ul>
+
+            <h3>Unir clientes Windows al dominio</h3>
+            <p>
+                Una vez que el dominio estaba activo, simplemente uní mis máquinas Windows al dominio de Samba.
+                Fue fascinante ver cómo la autenticación funcionaba de manera idéntica a un Active Directory de Windows.
+                Cada usuario creado en Samba podía iniciar sesión sin problemas y los recursos compartidos estaban accesibles de manera segura.
+            </p>
+
+            <h3>Gestionando usuarios con RSAT</h3>
+            <p>
+                Para no depender de la línea de comandos en Linux, instalé RSAT en mi estación Windows.
+                Esto me permitió administrar usuarios, grupos y permisos desde la interfaz de Windows, igual que lo haría en un servidor real.
+                La combinación de Samba y RSAT resultó ser muy eficiente, sobre todo para pruebas y demostraciones del proyecto Tuxeria.
+            </p>
+
+            <ul>
+                <li>RSAT facilita la creación y gestión de cuentas de usuario en el dominio Samba.</li>
+                <li>Se pueden configurar permisos y políticas de grupo de manera gráfica.</li>
+                <li>Se mantiene la seguridad sin necesidad de tocar la configuración interna de Samba desde Linux.</li>
+            </ul>
+
+            <h3>Conclusión</h3>
+            <p>
+                Usar Samba como controlador de dominio y RSAT para la gestión fue una solución elegante para el proyecto.
+                Me permitió experimentar con Active Directory sin necesidad de invertir en licencias de Windows Server, y garantizó que el entorno de Tuxeria estuviera organizado y seguro.
+                Además, me ayudó a comprender mejor cómo funcionan los dominios y la gestión de usuarios en entornos corporativos.
+            </p>
+
+            <p><a href="./index.html" class="back-link">← Volver al DevBlog</a></p>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 DevBlog Eneko Martinez</p>
+    </footer>
+</body>
+</html>

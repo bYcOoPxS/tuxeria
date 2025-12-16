@@ -1,6 +1,7 @@
 <?php
     require_once('./mysql_connect.php');
-    $mensaje = "";
+    $mensaje_exito = "";
+    $mensaje_error = "";
 if (isset($_POST['brpizza'])){
 
     $konexioa = mysqli_connect(zerbitzaria, erabiltzailea, pasahitza, db);
@@ -16,8 +17,9 @@ if (isset($_POST['brpizza'])){
     $insert_query = mysqli_query($konexioa, $sql_insert);
 
     if ($insert_query){
-        echo "<h1>Pizza insertada</h1>";
-        echo "La pizza ".$nombre." ha sido correctamente registrada en la BBDD";
+        $mensaje_exito = "PIZZA INSERTADA!<br>La pizza ".$nombre." ha sido correctamente registrada en la BBDD";
+    } else {
+        $mensaje_error = "LA PIZZA NO SE HA PODIDO INSERTAR!";
     }
 }
 ?>
@@ -34,7 +36,14 @@ if (isset($_POST['brpizza'])){
     <div class="container-rpizza">
     <img src="./images/tuxxeria_blue.png" alt="Tuxeria Logo" class="logo-rcliente">
 
-    <?php if($mensaje) echo "<p class='mensaje'>$mensaje</p>"; ?>
+<?php
+    if ($mensaje_exito) {
+            echo "<p class='mensaje-exito'>$mensaje_exito</p>";
+        }
+        if ($mensaje_error) {
+            echo "<p class='mensaje-error'>$mensaje_error</p>";
+        }
+?>
 
     <form class="rpizza-form" action="#" method="post">
         <label for="rpizza-nombre">Pizzaren Izena:</label>

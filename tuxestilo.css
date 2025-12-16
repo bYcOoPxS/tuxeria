@@ -4,7 +4,7 @@ body {
     background-color: #e6f0fa; /* azul muy suave */
     margin: 0;
     padding: 0;
-    background-image: url('./images/background.jpg');
+    background-image: url('./images/background.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -202,9 +202,10 @@ form.rpedido-form input[type="submit"]:hover,
 /* ===================== Encabezados ===================== */
 .panel-title {
     color: #1565c0;
-    font-size: 2rem;
+    font-size: 3rem;
     margin-bottom: 1rem;
     text-align: center;
+    font-family: 'Quantico';
 }
 
 /* ===================== Ajustes Responsivos ===================== */
@@ -251,4 +252,54 @@ form.rpedido-form input[type="submit"]:hover,
 /* ===================== Inputs específicos ===================== */
 #rpedido-dni {
     margin-bottom: 1.5rem;
+}
+
+/* ===================== Contenedor Top Clientes ===================== */
+.container-topclientes {
+    background-color: rgba(240, 247, 255, 0.95);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: center;
+    width: 60%;
+    max-width: 700px;
+    margin: 2rem auto;
+}
+
+/* Logo top clientes */
+.logo-rtopclientes {
+    width: 180px;
+    margin-bottom: 2rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ===================== Tabla Top Clientes ===================== */
+#tabla-top-clientes {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+#tabla-top-clientes th,
+#tabla-top-clientes td {
+    border: 1px solid #90caf9;
+    padding: 0.8rem;
+    text-align: center;
+}
+
+#tabla-top-clientes th {
+    background-color: #2196f3;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px 5px 0 0; /* bordes redondeados en encabezado */
+}
+
+#tabla-top-clientes tr:nth-child(even) {
+    background-color: rgba(33, 150, 243, 0.1);
+}
+
+#tabla-top-clientes tr:hover {
+    background-color: rgba(33, 150, 243, 0.2);
 }

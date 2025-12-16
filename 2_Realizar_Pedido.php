@@ -1,7 +1,8 @@
 <?php
 // Conexión a la base de datos
 require_once('./mysql_connect.php');
-$mensaje = "";
+$mensaje_exito = "";
+$mensaje_error = "";
 $konexioa = mysqli_connect(zerbitzaria, erabiltzailea, pasahitza, db);
 mysqli_set_charset($konexioa, 'utf8');
 
@@ -104,12 +105,11 @@ if (isset($_POST['brpedido'])){
 
     // Mensaje final
     if($lerroak_pedido){
-        echo "Pedido insertado correctamente<br>";
+        $mensaje_exito = "Pedido insertado correctamente<br>
+                    El importe total de tu pedido asciende a: ".$importe."€";
     } else {
-        $mensaje = "Error al insertar";
+        $mensaje_error = "Error al insertar";
     }
-
-    echo "El importe total de tu pedido asciende a: ".$importe."€";
 }
 ?>
 <!DOCTYPE html>
@@ -124,7 +124,13 @@ if (isset($_POST['brpedido'])){
     <div class="container-rpedido">
         <img src="./images/tuxxeria_blue.png" alt="Tuxeria Logo" class="logo-rcliente">
 
-        <?php if($mensaje) echo "<p class='mensaje'>$mensaje</p>"; ?>
+<?php        if ($mensaje_exito) {
+            echo "<p class='mensaje-exito'>$mensaje_exito</p>";
+        }
+        if ($mensaje_error) {
+            echo "<p class='mensaje-error'>$mensaje_error</p>";
+        }
+?>
 
         <form class="rpedido-form" action="#" method="post">
             <label for="rpedido-dni">DNI:</label>
