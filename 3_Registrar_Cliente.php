@@ -20,9 +20,9 @@ $sql_insert = "INSERT into Cliente (DNI, nombre, direccion, poblacion, telefono,
 $insert_query = mysqli_query($konexioa, $sql_insert);
 
 if ($insert_query){
-    $mensaje_exito = "CLIENTE INSERTADO!<br>El cliente ".$nombre.", con DNI ".$dni." ha sido correctamente registrado en la BBDD";
+    $mensaje_exito = "BEZEROA ERREGISTRATUTA!<br>$nombre izeneko bezeroa, $dni DNI-arekin erregistratu egin da";
 } else {
-    $mensaje_error = "ERROR AL INSERTAR EL CLIENTE!";
+    $mensaje_error = "BEZEROA ERREGISTRATZEAN ERRORE BAT EGON DA!";
 }
 
 }
@@ -51,22 +51,22 @@ if ($insert_query){
         <label for="rcliente-dni">DNI:</label>
         <input type="text" name="dni" id="rcliente-dni" required>
 
-        <label for="rcliente-nombre">Nombre:</label>
+        <label for="rcliente-nombre">Izena:</label>
         <input type="text" name="nombre" id="rcliente-nombre" required>
 
-        <label for="rcliente-dir">Direccion:</label>
+        <label for="rcliente-dir">Helbidea:</label>
         <input type="text" name="dir" id="rcliente-dir" required>
 
-        <label for="rcliente-pob">Poblacion:</label>
+        <label for="rcliente-pob">Herrialdea:</label>
         <input type="text" name="pob" id="rcliente-pob" required>
 
-        <label for="rcliente-tlf">Telefono:</label>
+        <label for="rcliente-tlf">Telefonoa:</label>
         <input type="number" name="tlf" id="rcliente-tlf" required>
 
-        <label for="rcliente-email">Email:</label>
+        <label for="rcliente-email">Emaila:</label>
         <input type="email" name="email" id="rcliente-email" required>
 
-        <input type="submit" name="brcliente" value="Registrar Cliente">
+        <input type="submit" name="brcliente" value="Bezeroa erregistratu">
     </form>
     <a href="./1_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
 </div>

@@ -18,9 +18,9 @@ if (isset($_POST['bconalta'])){
         $nom_cliente = $info_cliente['nombre'];
         $dni_cliente = $info_cliente['DNI'];
         $mail_cliente = $info_cliente['email'];
-        $mensaje_exito = "EXITO! El cliente ".$nom_cliente.", con DNI ".$dni_cliente." y mail ".$mail_cliente." esta correctamente registrado";
+        $mensaje_exito = "ARRAKASTA! ".$nom_cliente." izeneko bezeroa, ".$dni_cliente." DNI-arekin eta ".$mail_cliente." mail-arekin gure datu basean erregistratuta dago. ";
     } else {
-        $mensaje_error = "ERROR! No se encuentra el DNI ".$dni." en la BBDD";
+        $mensaje_error = "ERROREA! Ez da ".$dni_cliente." DNI-a duen bezero bat aurkitu!";
     }
 }
 
@@ -54,7 +54,7 @@ if (isset($_POST['bconalta'])){
         <label for="conalta-dni">DNI:</label>
         <input type="text" name="dni" id="conalta-dni" required>
 
-        <input type="submit" name="bconalta" value="Comprobar Cliente" class="button">
+        <input type="submit" name="bconalta" value="Bezeroa Egiaztatu" class="button">
     </form>
 
     <a href="./1_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>

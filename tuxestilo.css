@@ -303,3 +303,12 @@ form.rpedido-form input[type="submit"]:hover,
 #tabla-top-clientes tr:hover {
     background-color: rgba(33, 150, 243, 0.2);
 }
+
+/* ===================== Resumen de pedido ===================== */
+.resumen-pedido {
+    text-align: center;       /* centrado igual que mensaje-exito */
+    font-size: 0.9rem;        /* más pequeño que mensaje-exito */
+    color: #0d47a1;           /* mismo azul oscuro */
+    margin: 0.5rem 0 1rem 0;  /* margen superior e inferior */
+    line-height: 1.5;         /* separación entre líneas */
+}

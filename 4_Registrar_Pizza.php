@@ -17,9 +17,9 @@ if (isset($_POST['brpizza'])){
     $insert_query = mysqli_query($konexioa, $sql_insert);
 
     if ($insert_query){
-        $mensaje_exito = "PIZZA INSERTADA!<br>La pizza ".$nombre." ha sido correctamente registrada en la BBDD";
+        $mensaje_exito = "PIZZA TXERTATUTA!<br>$nombre izeneko pizza datu basean txertatu da";
     } else {
-        $mensaje_error = "LA PIZZA NO SE HA PODIDO INSERTAR!";
+        $mensaje_error = "PIZZA EZIN IZAN DA TXERTATU!";
     }
 }
 ?>

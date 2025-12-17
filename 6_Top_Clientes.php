@@ -1,10 +1,17 @@
 <?php
+require_once('./ahilak.php');
 require_once('./mysql_connect.php');
 $konexioa = mysqli_connect(zerbitzaria, erabiltzailea, pasahitza, db);
 mysqli_set_charset($konexioa, 'utf8');
 
 $sql_top_clientes = "SELECT * from top_clientes order by cant_pizzas desc, cant_pedidos";
 $lerroak_top_clientes = mysqli_query($konexioa, $sql_top_clientes);
+
+$sql_mes = "SELECT MONTHNAME(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AS hila_inglesa;";
+$lerroak_mes = mysqli_query($konexioa, $sql_mes);
+$resultado_meses = mysqli_fetch_assoc($lerroak_mes);
+
+$mes = $resultado_meses['hila_inglesa'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,13 +19,13 @@ $lerroak_top_clientes = mysqli_query($konexioa, $sql_top_clientes);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./tuxestilo.css">
-    <title>TOP CLIENTES TUXERIA</title>
+    <title>TOP BEZEROAK TUXERIAn</title>
 </head>
 <body>
 
 <div class="container-topclientes" id="top-clientes-container">
     <img src="./images/tuxxeria_blue.png" alt="Tuxeria Logo" class="logo-rtopclientes">
-    <h1 class="panel-title">TOP CLIENTES</h1>
+    <h1 class="panel-title">TOP BEZEROAK (<?php echo $ahilak[$mes] ?>)</h1>
 
     <table id="tabla-top-clientes">
         <thead>
