@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevBlog Eneko Martinez - Configuración Apache Tuxeria</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <header>
+        <h1>DevBlog Eneko Martinez</h1>
+        <p>Mis aportaciones para el proyecto <strong>Tuxeria</strong></p>
+    </header>
+
+    <main>
+        <article>
+            <h2>Configuración de Apache para Tuxeria</h2>
+            <p class="date">18 de diciembre de 2025</p>
+
+            <p>
+                En este artículo explico cómo he configurado Apache para la web de <strong>Tuxeria</strong>.
+                El objetivo principal era tener un servidor seguro, con HTTPS y autenticación básica.
+            </p>
+
+            <h3>Directorio principal</h3>
+            <p>
+                El DocumentRoot se ha establecido en <code>/var/www/tuxeria</code>. 
+                Para evitar que los usuarios vean archivos sensibles si el directorio no tiene un <code>index.php</code>, 
+                se ha deshabilitado el listado de directorios con <code>Options -Indexes</code>.
+            </p>
+
+            <h3>HTTPS y SSL</h3>
+            <p>
+                Se ha habilitado SSL en Apache con el certificado propio:
+            </p>
+            <p>
+                <code>SSLCertificateFile /etc/ssl/certs/tuxeria.crt</code><br>
+                <code>SSLCertificateKeyFile /etc/ssl/private/tuxeria.key</code>
+            </p>
+            <p>Además, se fuerza la redirección de HTTP a HTTPS usando un VirtualHost en el puerto 80.</p>
+
+            <h3>Autenticación básica</h3>
+            <p>
+                Para mayor seguridad se ha activado Basic Auth. Se utiliza un archivo de contraseñas:
+            </p>
+            <p><code>/etc/apache2/.htpasswd_tuxeria</code></p>
+            <p>Esto obliga a cualquier usuario a autenticarse antes de acceder al contenido.</p>
+
+            <h3>Resumen de directivas importantes</h3>
+            <p>
+                <code>Options -Indexes +FollowSymLinks</code><br>
+                <code>AllowOverride All</code><br>
+                <code>Require valid-user</code><br>
+                <code>DirectoryIndex index.php index.html</code>
+            </p>
+
+            <h3>Conclusión</h3>
+            <p>
+                Con esta configuración, la web de Tuxeria es accesible solo mediante HTTPS, con autenticación básica
+                y sin posibilidad de listar directorios. Esto asegura un entorno más seguro y profesional.
+            </p>
+
+            <p><a href="./index.html" class="back-link">← Volver al DevBlog</a></p>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 DevBlog Eneko Martinez</p>
+    </footer>
+</body>
+</html>

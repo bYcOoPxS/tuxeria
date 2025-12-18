@@ -49,7 +49,7 @@ $mes = $resultado_meses['hila_inglesa'];
         <?php endwhile; ?>
         </tbody>
     </table>
+    <a href="./1_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
 </div>
-
 </body>
 </html>
