@@ -15,7 +15,7 @@
     <div class="navbar-derecha">
         <a href="./devblogs/eneko/index.html" target="_blank">DevBlog Eneko</a>
         <a href="./devblogs/jonq/index.html" target="_blank">DevBlog JonQ</a>
-        <a href="./devblogs/oier/index.html target="_blank">DevBlog Oier</a>
+        <a href="./devblogs/oier/index.html" target="_blank">DevBlog Oier</a>
     </div>
 
     <div class="container">
@@ -23,10 +23,11 @@
         <h1 class="panel-title">TUXERIA</h1>
 
         <a href="./2_Realizar_Pedido.php" class="button">Eskaera bat egin</a>
-        <a href="./3_Registrar_Cliente.php" class="button">Bezero bat erregistratu</a>
-        <a href="./4_Registrar_Pizza.php" class="button">Pizza bat gehitu</a>
-        <a href="./5_Consultar_Dni.php" class="button">Bezero baten alta kontsultatu</a>
-        <a href="./6_Top_Clientes.php" class="button">TOP 5 BEZERO</a>
+        <a href="./3_Consultar_Dni.php" class="button">Bezero baten alta kontsultatu</a>
+        <a href="./4_Registrar_Cliente.php" class="button">Bezero bat erregistratu</a>
+        <a href="./5_Registrar_Pizza.php" class="button">Pizza bat gehitu</a>
+        <a href="./6_Quitar_Pizza.php" class="button">Pizza bat kendu</a>
+        <a href="./estatistikak/1_Estatistikak_Panel.php" class="button">ESTATISTIKAK</a>
     </div>
 </body>
 

@@ -1,6 +1,6 @@
 <?php
-require_once('./ahilak.php');
-require_once('./mysql_connect.php');
+require_once('../ahilak.php');
+require_once('../mysql_connect.php');
 $konexioa = mysqli_connect(zerbitzaria, erabiltzailea, pasahitza, db);
 mysqli_set_charset($konexioa, 'utf8');
 
@@ -18,13 +18,13 @@ $mes = $resultado_meses['hila_inglesa'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./tuxestilo.css">
+    <link rel="stylesheet" href="../tuxestilo.css">
     <title>TOP BEZEROAK TUXERIAn</title>
 </head>
 <body>
 
 <div class="container-topclientes" id="top-clientes-container">
-    <img src="./images/tuxxeria_blue.png" alt="Tuxeria Logo" class="logo-rtopclientes">
+    <img src="../images/tuxxeria_blue.png" alt="Tuxeria Logo" class="logo-rtopclientes">
     <h1 class="panel-title">TOP BEZEROAK (<?php echo $ahilak[$mes] ?>)</h1>
 
     <table id="tabla-top-clientes">
@@ -49,7 +49,7 @@ $mes = $resultado_meses['hila_inglesa'];
         <?php endwhile; ?>
         </tbody>
     </table>
-    <a href="./1_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
+    <a href="./1_Estatistikak_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
 </div>
 </body>
 </html>

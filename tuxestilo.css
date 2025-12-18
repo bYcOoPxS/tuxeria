@@ -16,6 +16,7 @@ body {
 .container-rcliente,
 .container-rpizza,
 .container-rpedido,
+.container-qpizza,
 .container-conalta {
     background-color: rgba(240, 247, 255, 0.95); /* azul claro semi-transparente */
     padding: 2rem;

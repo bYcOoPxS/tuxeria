@@ -28,6 +28,12 @@ if (isset($_POST['brpedido'])){
     $importe = 0;
     $lineasPedido = [];
 
+    // Sacar el nombre del cliente
+    $sql_nom_cliente = "SELECT nombre from Cliente where DNI = '$dni';";
+    $lerroak_nom_cliente = mysqli_query($konexioa, $sql_nom_cliente);
+    $cliente = mysqli_fetch_assoc($lerroak_nom_cliente);
+    $nombre = strtoupper($cliente['nombre']);
+
     // Resumen del pedido centrado y con clase
     $resumenPedido = "<div class='resumen-pedido'>";
 
@@ -71,7 +77,7 @@ if (isset($_POST['brpedido'])){
     // Mensaje de éxito con resumen y total
     if($lerroak_pedido){
         $mensaje_exito = "
-            Eskaera gure chef-ari ailegatu zaio<br><br>
+            Eskaera gure chef-ari ailegatu zaio $nombre<br><br>
             <strong>Eskaeraren laburpena:</strong><br>
             $resumenPedido
             <strong>Eskaeraren prezio finala:</strong> $importe €

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Eventos - Sistema Tuxeria</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+         <h1>DevBlog Jon Quintanilla</h1>
+        <p>Mis Aportaciones al proyecto Tuxeria</p>
+    </header>
+    
+    <main>
+        <article>
+            <h2>Introducción a los Eventos del Sistema</h2>
+            <p class="date">Publicado: Noviembre 2023</p>
+            <p>El sistema Tuxeria implementa 3 eventos programados que ejecutan tareas de mantenimiento y análisis de forma automática y periódica. Estos eventos trabajan sobre las <code>tablas auxiliares creadas previamente</code> para optimización.</p>
+            
+            <p>Características principales de los eventos:</p>
+            <ul>
+                <li>Ejecución automática según programación definida</li>
+                <li>Mantenimiento de datos históricos y estadísticos</li>
+                <li>Identificación de patrones de comportamiento</li>
+                <li>Limpieza y organización de datos automatizada</li>
+            </ul>
+            
+            <p><strong>Importante:</strong> Para que los eventos funcionen, debe estar activado el event scheduler:</p>
+            <code>SET GLOBAL event_scheduler = ON;</code>
+        </article>
+        
+        <section>
+            <h2>Evento 1: topclientes</h2>
+            <p class="event-schedule"> Programación: Cada 1 minuto</p>
+            
+            <h3>Código completo:</h3>
+            <code class="multiline">DROP EVENT IF EXISTS topclientes;
+
+DELIMITER //
+CREATE EVENT topclientes
+ON SCHEDULE EVERY 1 MINUTE
+DO
+BEGIN
+    TRUNCATE TABLE top_clientes;
+
+    INSERT INTO top_clientes (nombre, cant_pedidos, cant_pizzas)
+    SELECT
+        C.nombre,
+        COUNT(DISTINCT P.num_pedido) AS Pedidos_Mes_Anterior,
+        IFNULL(SUM(LP.unidades), 0) AS Unidades_Mes_Anterior
+    FROM Cliente C
+    LEFT JOIN Pedido P
+        ON C.DNI = P.dni_cliente
+        AND P.fechahora >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01')
+        AND P.fechahora < DATE_FORMAT(CURDATE(), '%Y-%m-01')
+    LEFT JOIN LineaPedido LP
+        ON P.num_pedido = LP.num_pedido
+    GROUP BY C.DNI, C.nombre
+    HAVING Pedidos_Mes_Anterior >= 5 OR Unidades_Mes_Anterior >= 9
+    ORDER BY Pedidos_Mes_Anterior DESC, C.nombre;
+END //</code>
+            
+            <h3>Funcionamiento:</h3>
+            <ul>
+                <li><strong>Frecuencia:</strong> Se ejecuta cada minuto (probablemente para testing, en producción sería mensual)</li>
+                <li><strong>Objetivo:</strong> Identificar clientes VIP del mes anterior</li>
+                <li><strong>Criterios:</strong> Clientes con 5+ pedidos O 9+ pizzas en el mes anterior</li>
+            </ul>
+            
+            <h3>Lógica del filtro temporal:</h3>
+            <code>P.fechahora >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01')
+AND P.fechahora < DATE_FORMAT(CURDATE(), '%Y-%m-01')</code>
+            <p>Este filtro selecciona pedidos del mes completo anterior (ej: si hoy es 15/11, selecciona pedidos de octubre).</p>
+            
+            <h3>Ejemplo de datos generados:</h3>
+            <table>
+                <tr>
+                    <th>nombre</th>
+                    <th>cant_pedidos</th>
+                    <th>cant_pizzas</th>
+                </tr>
+                <tr>
+                    <td>Juan Pérez</td>
+                    <td>7</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>María García</td>
+                    <td>5</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>Carlos López</td>
+                    <td>4</td>
+                    <td>10</td>
+                </tr>
+            </table>
+            <p>Carlos López aparece porque tiene 10 pizzas (cumple el segundo criterio).</p>
+        </section>
+        
+        <section>
+            <h2>Evento 2: clientesanti</h2>
+            <p class="event-schedule"> Programación: Cada 10 minutos</p>
+            
+            <h3>Código completo (simplificado):</h3>
+            <code class="multiline">CREATE EVENT clientesanti
+ON SCHEDULE EVERY 10 MINUTE
+ON COMPLETION PRESERVE
+ENABLE
+DO
+BEGIN
+  -- Declaración de variables y cursor
+  DECLARE c CURSOR FOR 
+    SELECT c.*, p.fechahora
+    FROM Cliente c
+    JOIN Pedido p ON c.DNI = p.dni_cliente
+    GROUP BY c.DNI
+    HAVING TIMESTAMPDIFF(YEAR, MAX(p.fechahora), CURDATE()) >= 1;
+  
+  -- Lógica con cursor para procesar cada cliente
+  -- ...
+  
+  TRUNCATE TABLE clientes_antiguos;
+  -- Inserta clientes inactivos en la tabla de archivo
+END //</code>
+            
+            <h3>Funcionamiento:</h3>
+            <ul>
+                <li><strong>Frecuencia:</strong> Cada 10 minutos</li>
+                <li><strong>Objetivo:</strong> Archivar clientes inactivos por más de 1 año</li>
+                <li><strong>Técnica:</strong> Usa CURSOR para procesamiento fila por fila</li>
+                <li><strong>ON COMPLETION PRESERVE:</strong> El evento no se elimina después de ejecutarse</li>
+                <li><strong>ENABLE:</strong> El evento se crea activado</li>
+            </ul>
+            
+            <h3>Lógica del cursor:</h3>
+            <ol>
+                <li>Selecciona clientes que han hecho al menos un pedido</li>
+                <li>Agrupa por DNI para obtener el último pedido de cada cliente</li>
+                <li>Filtra aquellos cuyo último pedido fue hace 1 año o más</li>
+                <li>Procesa cada resultado con un cursor</li>
+            </ol>
+            
+            <h3>Condición clave:</h3>
+            <code>TIMESTAMPDIFF(YEAR, MAX(p.fechahora), CURDATE()) >= 1</code>
+            <p>Esta condición calcula la diferencia en años entre la fecha del último pedido y la fecha actual.</p>
+            
+            <h3>Problema potencial:</h3>
+            <p>El evento <strong>no considera clientes sin pedidos</strong> porque hace JOIN con la tabla Pedido. Un cliente registrado hace más de 1 año pero sin pedidos no sería archivado.</p>
+        </section>
+        
+        <section>
+            <h2>Evento 3: clientessinped</h2>
+            <p class="event-schedule"> Programación: Cada 10 minutos</p>
+            
+            <h3>Código completo (simplificado):</h3>
+            <code class="multiline">CREATE EVENT clientessinped
+ON SCHEDULE EVERY 10 MINUTE 
+ON COMPLETION PRESERVE
+ENABLE
+DO
+BEGIN
+  -- Cursor para clientes nuevos sin pedidos
+  DECLARE c CURSOR FOR
+      SELECT *
+      FROM Cliente
+      WHERE TIMESTAMPDIFF(MONTH, fecha_alta, CURDATE()) >= 1
+        AND ped_realizados = 0;
+  
+  -- Procesamiento con cursor
+  -- ...
+  
+  TRUNCATE TABLE clientes_nuevossinped;
+  -- Inserta clientes nuevos sin pedidos
+END //</code>
+            
+            <h3>Funcionamiento:</h3>
+            <ul>
+                <li><strong>Frecuencia:</strong> Cada 10 minutos</li>
+                <li><strong>Objetivo:</strong> Identificar clientes registrados hace 1+ mes sin pedidos</li>
+                <li><strong>Criterios:</strong>
+                    <ol>
+                        <li>Registrado hace 1 mes o más</li>
+                        <li>Ningún pedido realizado (ped_realizados = 0)</li>
+                    </ol>
+                </li>
+            </ul>
+            
+            <h3>Condiciones de filtrado:</h3>
+            <code>TIMESTAMPDIFF(MONTH, fecha_alta, CURDATE()) >= 1
+AND ped_realizados = 0</code>
+            
+            <p>Esta lógica aprovecha el campo <code>ped_realizados</code> que mantienen los triggers, evitando un JOIN costoso con la tabla Pedido.</p>
+            
+            <h3>Propósito de negocio:</h3>
+            <p>Identificar clientes potenciales que se registraron pero no completaron ninguna compra, útil para campañas de remarketing o seguimiento comercial.</p>
+        </section>
+        
+        <section>
+            <h2>Análisis Comparativo de Eventos</h2>
+            
+            <h3>Resumen de funcionalidades:</h3>
+            <table>
+                <tr>
+                    <th>Evento</th>
+                    <th>Frecuencia</th>
+                    <th>Tabla Destino</th>
+                    <th>Propósito</th>
+                </tr>
+                <tr>
+                    <td>topclientes</td>
+                    <td>1 minuto</td>
+                    <td>top_clientes</td>
+                    <td>Identificar clientes VIP</td>
+                </tr>
+                <tr>
+                    <td>clientesanti</td>
+                    <td>10 minutos</td>
+                    <td>clientes_antiguos</td>
+                    <td>Archivar clientes inactivos</td>
+                </tr>
+                <tr>
+                    <td>clientessinped</td>
+                    <td>10 minutos</td>
+                    <td>clientes_nuevossinped</td>
+                    <td>Identificar leads no convertidos</td>
+                </tr>
+            </table>
+            
+            <h3>Uso de Cursors vs Consultas Directas:</h3>
+            <ul>
+                <li><strong>topclientes:</strong> Usa consulta directa (más eficiente para datos agregados)</li>
+                <li><strong>clientesanti/clientessinped:</strong> Usan cursors (necesario para procesamiento fila por fila con lógica compleja)</li>
+            </ul>
+            
+            <h3>Optimizaciones posibles:</h3>
+            <ol>
+                <li><strong>topclientes:</strong> Cambiar frecuencia a mensual en producción</li>
+                <li><strong>clientesanti:</strong> Reemplazar cursor con INSERT...SELECT directo</li>
+                <li><strong>clientessinped:</strong> Ya está optimizado al usar ped_realizados</li>
+            </ol>
+            
+            <h3>Versión optimizada de clientesanti:</h3>
+            <code class="multiline">-- Sin cursor, más eficiente
+CREATE EVENT clientesanti_optimizado
+ON SCHEDULE EVERY 1 DAY
+DO
+BEGIN
+  TRUNCATE TABLE clientes_antiguos;
+  
+  INSERT INTO clientes_antiguos 
+  SELECT c.*, MAX(p.fechahora) as ultimo_pedido
+  FROM Cliente c
+  JOIN Pedido p ON c.DNI = p.dni_cliente
+  GROUP BY c.DNI, c.nombre, c.direccion, c.poblacion, 
+           c.telefono, c.email, c.fecha_alta, 
+           c.ped_realizados, c.pizzastotales
+  HAVING TIMESTAMPDIFF(YEAR, MAX(p.fechahora), CURDATE()) >= 1;
+END //</code>
+        </section>
+        
+        <section>
+            <h2>Integración con el Sistema Completo</h2>
+            
+            <h3>Flujo de datos completo:</h3>
+            <ol>
+                <li><strong>En tiempo real:</strong> Triggers actualizan contadores en Cliente y Pizza</li>
+                <li><strong>Cada minuto:</strong> topclientes recalcula clientes VIP</li>
+                <li><strong>Cada 10 minutos:</strong>
+                    <ul>
+                        <li>clientesanti archiva inactivos</li>
+                        <li>clientessinped identifica leads fríos</li>
+                    </ul>
+                </li>
+            </ol>
+            
+            <h3>Ventajas de esta arquitectura:</h3>
+            <ul>
+                <li><strong>Separación de responsabilidades:</strong> Triggers para tiempo real, eventos para batch</li>
+                <li><strong>Rendimiento:</strong> Cálculos pesados se hacen en horarios controlados</li>
+                <li><strong>Históricos:</strong> Tablas auxiliares mantienen snapshots periódicos</li>
+                <li><strong>Escalabilidad:</strong> Fácil ajustar frecuencias según necesidades</li>
+            </ul>
+            
+            <h3>Casos de uso empresarial:</h3>
+            <ul>
+                <li><strong>Marketing:</strong> Campañas para clientes VIP o recuperación de inactivos</li>
+                <li><strong>Ventas:</strong> Seguimiento de leads no convertidos</li>
+                <li><strong>Análisis:</strong> Tendencias mensuales de clientes más valiosos</li>
+                <li><strong>Operaciones:</strong> Limpieza automatizada de base de datos</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2>Conclusión</h2>
+            
+            <p>Los eventos programados en Tuxeria completan el ecosistema de automatización junto con los triggers:</p>
+            
+            <h3>Triggers vs Eventos:</h3>
+            <table>
+                <tr>
+                    <th>Aspecto</th>
+                    <th>Triggers</th>
+                    <th>Eventos</th>
+                </tr>
+                <tr>
+                    <td><strong>Activación</strong></td>
+                    <td>Por operaciones DML</td>
+                    <td>Por tiempo/cron</td>
+                </tr>
+                <tr>
+                    <td><strong>Frecuencia</strong></td>
+                    <td>En tiempo real</td>
+                    <td>Periódica</td>
+                </tr>
+                <tr>
+                    <td><strong>Propósito</strong></td>
+                    <td>Mantener consistencia</td>
+                    <td>Mantenimiento/análisis</td>
+                </tr>
+                <tr>
+                    <td><strong>Ejemplo</strong></td>
+                    <td>Actualizar contadores</td>
+                    <td>Generar reportes</td>
+                </tr>
+            </table>
+            
+            <h3>Recomendaciones para producción:</h3>
+            <ol>
+                <li>Ajustar frecuencias según necesidades reales (1 minuto es excesivo para topclientes)</li>
+                <li>Monitorizar ejecución de eventos en logs</li>
+                <li>Considerar backups antes de TRUNCATE en tablas críticas</li>
+                <li>Implementar manejo de errores en eventos</li>
+            </ol>
+            
+            <p>El sistema demuestra una arquitectura completa donde las alteraciones de tablas, triggers y eventos trabajan conjuntamente para crear un sistema autónomo y eficiente.</p>
+            
+            <div class="navigation-links">
+               
+                <a href="index.html" class="back-link">← Análisis de Alteraciones</a>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>Análisis Técnico - Eventos Programados del Sistema Tuxeria</p>
+        <p>Los eventos automatizan tareas de mantenimiento y análisis periódicas</p>
+    </footer>
+</body>
+</html>

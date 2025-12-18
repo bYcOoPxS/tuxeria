@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Triggers - Sistema Tuxeria</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>DevBlog Jon Quintanilla</h1>
+        <p>Mis Aportaciones al proyecto Tuxeria</p>
+    </header>
+    
+    <main>
+        <article>
+            <h2>Introducción a los Triggers del Sistema</h2>
+            <p class="date">Publicado: Noviembre 2023</p>
+            <p>El sistema Tuxeria implementa 3 triggers esenciales que mantienen automáticamente las estadísticas de pedidos actualizadas. Estos triggers trabajan sobre los <code>campos añadidos previamente</code> a las tablas Pizza y Cliente.</p>
+            
+            <p>Objetivo principal de los triggers:</p>
+            <ul>
+                <li>Mantener contadores actualizados en tiempo real</li>
+                <li>Evitar consultas agregadas costosas</li>
+                <li>Garantizar consistencia en los datos estadísticos</li>
+                <li>Automatizar procesos repetitivos</li>
+            </ul>
+        </article>
+        
+        <section>
+            <h2>Trigger 1: pedidosrealizados</h2>
+            
+            <h3>Código completo:</h3>
+            <code class="multiline">DROP TRIGGER IF EXISTS pedidosrealizados;
+DELIMITER //
+CREATE TRIGGER pedidosrealizados
+AFTER INSERT ON Pedido 
+FOR EACH ROW 
+BEGIN 
+    UPDATE Cliente 
+    SET ped_realizados = ped_realizados + 1
+    WHERE Cliente.dni = NEW.dni_cliente;
+END //</code>
+            
+            <h3>Funcionamiento:</h3>
+            <ul>
+                <li><strong>Evento:</strong> Se activa <code>AFTER INSERT</code> en la tabla Pedido</li>
+                <li><strong>Frecuencia:</strong> Por cada fila insertada (<code>FOR EACH ROW</code>)</li>
+                <li><strong>Acción:</strong> Incrementa en 1 el campo <code>ped_realizados</code> del cliente correspondiente</li>
+            </ul>
+            
+            <h3>Flujo de datos:</h3>
+            <ol>
+                <li>Se inserta un nuevo registro en la tabla Pedido</li>
+                <li>El trigger captura el <code>NEW.dni_cliente</code></li>
+                <li>Busca el cliente con ese DNI</li>
+                <li>Incrementa su contador <code>ped_realizados</code></li>
+            </ol>
+            
+            <h3>Ejemplo práctico:</h3>
+            <code>-- Insertar un pedido
+INSERT INTO Pedido (dni_cliente, importe) VALUES ('12345678A', 25.50);
+
+-- Resultado automático:
+-- Cliente con DNI '12345678A' incrementa ped_realizados de 5 a 6</code>
+        </section>
+        
+        <section>
+            <h2>Trigger 2: pizzaspedidas</h2>
+            
+            <h3>Código completo:</h3>
+            <code class="multiline">DROP TRIGGER IF EXISTS pizzaspedidas;
+DELIMITER //
+CREATE TRIGGER pizzaspedidas
+AFTER INSERT ON LineaPedido 
+FOR EACH ROW 
+BEGIN 
+    UPDATE Pizza 
+    SET veces_pedidas = veces_pedidas + 1, 
+        sumadepizzas = sumadepizzas + NEW.unidades
+    WHERE Pizza.nom_pizza = NEW.nom_pizza;
+END //</code>
+            
+            <h3>Funcionamiento:</h3>
+            <ul>
+                <li><strong>Evento:</strong> Se activa <code>AFTER INSERT</code> en LineaPedido</li>
+                <li><strong>Acción:</strong> Actualiza dos campos de la tabla Pizza simultáneamente:
+                    <ul>
+                        <li><code>veces_pedidas</code>: Incrementa en 1 (un pedido más)</li>
+                        <li><code>sumadepizzas</code>: Suma las unidades pedidas</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h3>Flujo de datos:</h3>
+            <ol>
+                <li>Se inserta una línea de pedido (ej: Margarita, 2 unidades)</li>
+                <li>El trigger captura <code>NEW.nom_pizza</code> y <code>NEW.unidades</code></li>
+                <li>Actualiza la pizza correspondiente</li>
+                <li>Incrementa <code>veces_pedidas</code> en 1</li>
+                <li>Suma las unidades a <code>sumadepizzas</code></li>
+            </ol>
+            
+            <h3>Ejemplo práctico:</h3>
+            <code>-- Insertar línea de pedido
+INSERT INTO LineaPedido (num_pedido, nom_pizza, unidades) 
+VALUES (100, 'Margarita', 3);
+
+-- Resultado automático:
+-- Pizza 'Margarita':
+-- - veces_pedidas: de 15 a 16
+-- - sumadepizzas: de 45 a 48</code>
+        </section>
+        
+        <section>
+            <h2>Trigger 3: cantpizzas</h2>
+            
+            <h3>Código completo:</h3>
+            <code class="multiline">DROP TRIGGER IF EXISTS cantpizzas; 
+DELIMITER //
+CREATE TRIGGER cantpizzas
+AFTER INSERT ON LineaPedido
+FOR EACH ROW
+BEGIN
+    DECLARE pdni CHAR(9);
+    SELECT dni_cliente INTO pdni 
+    FROM Pedido 
+    WHERE num_pedido = NEW.num_pedido;
+    
+    UPDATE Cliente
+    SET pizzastotales = pizzastotales + NEW.unidades
+    WHERE DNI = pdni;
+END //</code>
+            
+            <h3>Funcionamiento:</h3>
+            <ul>
+                <li><strong>Evento:</strong> Se activa <code>AFTER INSERT</code> en LineaPedido</li>
+                <li><strong>Complejidad:</strong> Requiere consulta adicional para obtener el DNI del cliente</li>
+                <li><strong>Variable:</strong> Usa <code>DECLARE pdni</code> para almacenar temporalmente el DNI</li>
+            </ul>
+            
+            <h3>Flujo de datos:</h3>
+            <ol>
+                <li>Se inserta una línea de pedido</li>
+                <li>El trigger consulta en la tabla Pedido el <code>dni_cliente</code> usando el <code>num_pedido</code></li>
+                <li>Almacena el resultado en la variable <code>pdni</code></li>
+                <li>Actualiza el campo <code>pizzastotales</code> del cliente correspondiente</li>
+            </ol>
+            
+            <h3>Punto importante:</h3>
+            <p>Este trigger necesita hacer un <code>SELECT</code> adicional porque la tabla LineaPedido no tiene directamente el DNI del cliente, solo el número de pedido.</p>
+            
+            <h3>Ejemplo práctico:</h3>
+            <code>-- Insertar línea de pedido
+INSERT INTO LineaPedido (num_pedido, nom_pizza, unidades) 
+VALUES (100, 'Cuatro quesos', 2);
+
+-- El trigger hace:
+-- 1. SELECT dni_cliente FROM Pedido WHERE num_pedido = 100
+-- 2. Supongamos que devuelve '12345678A'
+-- 3. UPDATE Cliente SET pizzastotales = pizzastotales + 2 WHERE DNI = '12345678A'</code>
+        </section>
+        
+        <section>
+            <h2>Interacción entre Triggers</h2>
+            
+            <h3>Escenario completo de un pedido:</h3>
+            <ol>
+                <li><strong>Paso 1:</strong> Insertar en Pedido → Activa <code>pedidosrealizados</code>
+                    <ul>
+                        <li>Cliente.ped_realizados aumenta en 1</li>
+                    </ul>
+                </li>
+                <li><strong>Paso 2:</strong> Insertar en LineaPedido → Activa <strong>dos triggers simultáneamente</strong>:
+                    <ul>
+                        <li><code>pizzaspedidas</code>: Actualiza estadísticas de la pizza</li>
+                        <li><code>cantpizzas</code>: Actualiza total de pizzas del cliente</li>
+                    </ul>
+                </li>
+            </ol>
+            
+            <h3>Ejemplo de pedido completo:</h3>
+            <code>-- 1. Crear pedido (activa pedidosrealizados)
+INSERT INTO Pedido (dni_cliente, importe) VALUES ('12345678A', 34.50);
+
+-- 2. Añadir primera pizza (activa pizzaspedidas y cantpizzas)
+INSERT INTO LineaPedido (num_pedido, nom_pizza, unidades) 
+VALUES (LAST_INSERT_ID(), 'Margarita', 2);
+
+-- 3. Añadir segunda pizza (activa pizzaspedidas y cantpizzas)
+INSERT INTO LineaPedido (num_pedido, nom_pizza, unidades) 
+VALUES (LAST_INSERT_ID(), 'Hawaiana', 1);</code>
+            
+            <h3>Resultados automáticos:</h3>
+            <ul>
+                <li>Cliente '12345678A': ped_realizados +1, pizzastotales +3</li>
+                <li>Pizza 'Margarita': veces_pedidas +1, sumadepizzas +2</li>
+                <li>Pizza 'Hawaiana': veces_pedidas +1, sumadepizzas +1</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2>Consideraciones Técnicas</h2>
+            
+            <h3>Ventajas de este diseño:</h3>
+            <ul>
+                <li><strong>Rendimiento:</strong> Estadísticas siempre actualizadas sin consultas agregadas</li>
+                <li><strong>Consistencia:</strong> Los triggers garantizan que los contadores sean exactos</li>
+                <li><strong>Transparencia:</strong> El usuario no necesita pensar en actualizar estadísticas</li>
+                <li><strong>Mantenibilidad:</strong> La lógica está centralizada en los triggers</li>
+            </ul>
+            
+            <h3>Posibles mejoras:</h3>
+            <ul>
+                <li>Añadir triggers para operaciones UPDATE y DELETE</li>
+                <li>Implementar manejo de errores en los triggers</li>
+                <li>Registrar logs de las actualizaciones realizadas</li>
+                <li>Optimizar el trigger <code>cantpizzas</code> con JOIN en lugar de SELECT separado</li>
+            </ul>
+            
+            <h3>Versión optimizada de cantpizzas:</h3>
+            <code class="multiline">-- Alternativa con JOIN
+CREATE TRIGGER cantpizzas_optimizado
+AFTER INSERT ON LineaPedido
+FOR EACH ROW
+BEGIN
+    UPDATE Cliente c
+    JOIN Pedido p ON c.DNI = p.dni_cliente
+    SET c.pizzastotales = c.pizzastotales + NEW.unidades
+    WHERE p.num_pedido = NEW.num_pedido;
+END //</code>
+        </section>
+        
+        <section>
+            <h2>Conclusión</h2>
+            <p>Los triggers en el sistema Tuxeria demuestran una implementación efectiva de automatización de estadísticas. Cada trigger cumple una función específica:</p>
+            
+            <ol>
+                <li><code>pedidosrealizados</code>: Sencillo y directo, actualiza contador de pedidos del cliente</li>
+                <li><code>pizzaspedidas</code>: Eficiente, actualiza dos campos de pizza simultáneamente</li>
+                <li><code>cantpizzas</code>: Más complejo, requiere consulta adicional pero necesario por el diseño de tablas</li>
+            </ol>
+            
+            <p>Juntos, estos triggers garantizan que todas las estadísticas de negocio se mantengan actualizadas automáticamente, proporcionando datos en tiempo real para análisis y reporting sin impactar el rendimiento del sistema.</p>
+            
+            <a href="index.html" class="back-link">← Volver al análisis de alteraciones</a>
+        </section>
+    </main>
+    
+    <footer>
+        <p>Análisis Técnico - Triggers del Sistema Tuxeria</p>
+        <p>Los triggers automatizan la actualización de estadísticas en tiempo real</p>
+    </footer>
+</body>
+</html>

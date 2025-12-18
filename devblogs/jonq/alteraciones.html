@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Técnico: Alteraciones en BD Tuxeria</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>DevBlog Jon Quintanilla</h1>
+        <p>Mis Aportaciones al proyecto Tuxeria</p>
+    </header>
+    
+    <main>
+        <article>
+            <h2>Introducción</h2>
+            <p class="date">Publicado: Noviembre 2023</p>
+            <p>El sistema de base de datos de la pizzería Tuxeria incluye <code>alteraciones estratégicas</code> que son fundamentales para el funcionamiento de triggers y eventos programados. Estas modificaciones no son meros añadidos, sino elementos clave de la arquitectura.</p>
+            
+            <p>Este análisis se centra en las alteraciones de tablas que permiten:</p>
+            <ul>
+                <li>Automatización mediante triggers en tiempo real</li>
+                <li>Eventos programados para mantenimiento</li>
+                <li>Optimización de consultas frecuentes</li>
+                <li>Reporting sin JOINs costosos</li>
+            </ul>
+        </article>
+        
+        <section>
+            <h2>Alteración 1: Tabla Pizza</h2>
+            <p>Se añadieron 2 campos para rastreo estadístico:</p>
+            <code>ALTER TABLE Pizza ADD COLUMN veces_pedidas INT DEFAULT 0;</code><br>
+            <code>ALTER TABLE Pizza ADD COLUMN sumadepizzas INT DEFAULT 0;</code>
+            
+            <h3>Propósito:</h3>
+            <ul>
+                <li><strong>veces_pedidas</strong>: Contador de pedidos por pizza (se incrementa en trigger AFTER INSERT en LineaPedido)</li>
+                <li><strong>sumadepizzas</strong>: Total de unidades vendidas (se actualiza con cada línea de pedido)</li>
+            </ul>
+            
+            <h3>Ejemplo de Trigger asociado:</h3>
+            <code>CREATE TRIGGER actualizar_stats_pizza AFTER INSERT ON LineaPedido<br>
+            FOR EACH ROW<br>
+            UPDATE Pizza SET veces_pedidas = veces_pedidas + 1,<br>
+            sumadepizzas = sumadepizzas + NEW.unidades<br>
+            WHERE nom_pizza = NEW.nom_pizza;</code>
+        </section>
+        
+        <section>
+            <h2>Alteración 2: Tabla Cliente</h2>
+            <p>Se añadieron 2 campos para seguimiento de actividad:</p>
+            <code>ALTER TABLE Cliente ADD COLUMN ped_realizados INT UNSIGNED DEFAULT 0;</code><br>
+            <code>ALTER TABLE Cliente ADD COLUMN pizzastotales INT UNSIGNED DEFAULT 0;</code>
+            
+            <h3>Propósito:</h3>
+            <ul>
+                <li><strong>ped_realizados</strong>: Número total de pedidos del cliente</li>
+                <li><strong>pizzastotales</strong>: Cantidad total de pizzas compradas</li>
+            </ul>
+            
+            <h3>Ejemplo de Trigger asociado:</h3>
+            <code>CREATE TRIGGER actualizar_stats_cliente AFTER INSERT ON Pedido<br>
+            FOR EACH ROW<br>
+            UPDATE Cliente SET ped_realizados = ped_realizados + 1<br>
+            WHERE DNI = NEW.dni_cliente;</code>
+        </section>
+        
+        <section>
+            <h2>Alteración 3: Tablas Auxiliares</h2>
+            <p>Se crearon tablas especializadas para funcionalidades específicas:</p>
+            
+            <h3>Tabla top_clientes:</h3>
+            <code>CREATE TABLE top_clientes (<br>
+            &nbsp;&nbsp;nombre VARCHAR(40) NOT NULL,<br>
+            &nbsp;&nbsp;cant_pedidos INT NOT NULL,<br>
+            &nbsp;&nbsp;cant_pizzas INT NOT NULL,<br>
+            &nbsp;&nbsp;PRIMARY KEY (nombre)<br>
+            );</code>
+            
+            <h3>Tabla clientes_antiguos:</h3>
+            <code>CREATE TABLE clientes_antiguos LIKE Cliente;<br>
+            ALTER TABLE clientes_antiguos ADD COLUMN ultimo_pedido DATETIME;</code>
+            
+            <h3>Propósito:</h3>
+            <ul>
+                <li><strong>top_clientes</strong>: Ranking actualizable mediante evento mensual</li>
+                <li><strong>clientes_antiguos</strong>: Archivo para clientes inactivos</li>
+            </ul>
+            
+            <h3>Ejemplo de Evento asociado:</h3>
+            <code>CREATE EVENT actualizar_top_clientes<br>
+            ON SCHEDULE EVERY 1 MONTH<br>
+            DO<br>
+            BEGIN<br>
+            &nbsp;&nbsp;TRUNCATE top_clientes;<br>
+            &nbsp;&nbsp;INSERT INTO top_clientes<br>
+            &nbsp;&nbsp;SELECT nombre, ped_realizados, pizzastotales<br>
+            &nbsp;&nbsp;FROM Cliente<br>
+            &nbsp;&nbsp;ORDER BY ped_realizados DESC<br>
+            &nbsp;&nbsp;LIMIT 10;<br>
+            END;</code>
+        </section>
+        
+        <section>
+            <h2>Arquitectura Basada en Alteraciones</h2>
+            
+            <h3>Ventajas del diseño:</h3>
+            <ul>
+                <li><strong>Rendimiento:</strong> Estadísticas en tiempo real sin consultas agregadas pesadas</li>
+                <li><strong>Automatización:</strong> Triggers mantienen datos consistentes automáticamente</li>
+                <li><strong>Mantenimiento:</strong> Eventos programados limpian y organizan datos</li>
+                <li><strong>Escalabilidad:</strong> Sistema preparado para crecimiento de datos</li>
+            </ul>
+            
+            <h3>Flujo de datos con triggers:</h3>
+            <ol>
+                <li>Nuevo pedido → Trigger actualiza Cliente.ped_realizados</li>
+                <li>Línea de pedido → Trigger actualiza Pizza.veces_pedidas y sumadepizzas</li>
+                <li>Línea de pedido → Trigger actualiza Cliente.pizzastotales</li>
+            </ol>
+            
+            <h3>Flujo de datos con eventos:</h3>
+            <ol>
+                <li>Mensualmente → Evento actualiza tabla top_clientes</li>
+                <li>Periódicamente → Evento mueve clientes inactivos a clientes_antiguos</li>
+            </ol>
+        </section>
+        
+        <section>
+            <h2>Conclusión</h2>
+            <p>Las alteraciones en las tablas de Tuxeria demuestran una arquitectura bien planificada que:</p>
+            <ul>
+                <li>Anticipa necesidades de reporting y análisis</li>
+                <li>Optimiza operaciones frecuentes mediante triggers</li>
+                <li>Automatiza tareas de mantenimiento con eventos</li>
+                <li>Prepara el sistema para escalar eficientemente</li>
+            </ul>
+            
+            <p>Estas modificaciones transforman una base de datos transaccional básica en un sistema inteligente que soporta tanto operaciones diarias como análisis de negocio avanzado.</p>
+            
+            <a href="index.html" class="back-link">← Volver al index</a>
+        </section>
+    </main>
+    
+    <footer>
+        <p>Análisis Técnico - Sistema de Base de Datos Tuxeria</p>
+        <p>Las alteraciones de campos son elementos estratégicos para automatización</p>
+    </footer>
+</body>
+</html>
