@@ -23,6 +23,7 @@
         <h1 class="panel-title">TUXERIA</h1>
 
         <a href="./2_Top_Clientes.php" class="button">TOP 5 BEZERO</a>
+        <a href="./5_TopPizzas.php" class="button">TOP 5 PIZZAS</a>
         <a href="./3_Clientes_Antiguos.php" class="button">ASPALDIKO BEZEROAK</a>
         <a href="./4_Clientes_SinPedidos.php" class="button">ESKAERIK GABEKO BEZEROAK</a>
         <a href="../1_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
