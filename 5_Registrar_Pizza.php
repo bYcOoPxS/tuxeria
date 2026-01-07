@@ -62,5 +62,8 @@ if (isset($_POST['brpizza'])){
     </form>
     <a href="./1_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
 </div>
+<?php
+    mysqli_close($konexioa);
+?>
 </body>
 </html>

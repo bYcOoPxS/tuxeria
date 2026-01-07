@@ -51,5 +51,12 @@ $mes = $resultado_meses['hila_inglesa'];
     </table>
     <a href="./1_Estatistikak_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
 </div>
+
+<?php
+    mysqli_free_result($lerroak_top_clientes);
+    mysqli_free_result($lerroak_mes);
+
+    mysqli_close($konexioa);
+?>
 </body>
 </html>

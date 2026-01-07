@@ -45,5 +45,10 @@ $lerroak_clientes_sinpe = mysqli_query($konexioa, $sql_clientes_sinpe);
     </table>
     <a href="./1_Estatistikak_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
 </div>
+<?php
+    mysqli_free_result($lerroak_clientes_sinpe);
+
+    mysqli_close($konexioa);
+?>
 </body>
 </html>

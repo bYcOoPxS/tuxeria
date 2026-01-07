@@ -58,5 +58,8 @@ $lerroak_pizzas = mysqli_query($konexioa, $sql_pizzas);
         <input type="submit" name="bqpizza" value="Pizza Kendu">
     </form>
 </div>
+<?php
+    mysqli_close($konexioa);
+?>
 </body>
 </html>

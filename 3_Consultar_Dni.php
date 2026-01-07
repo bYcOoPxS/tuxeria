@@ -60,6 +60,10 @@ if (isset($_POST['bconalta'])){
     <a href="./1_Panel.php" class="button" style="margin-top: 1rem;">Atzera</a>
 
 </div>
+<?php
+    mysqli_free_result($lerroak_cliente);
 
+    mysqli_close($konexioa);
+?>
 </body>
 </html>
