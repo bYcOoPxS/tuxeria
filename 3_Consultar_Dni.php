@@ -9,7 +9,7 @@ if (isset($_POST['bconalta'])){
 
     $dni = $_POST['dni'];
 
-    $sql_cliente = "SELECT DNI, nombre, email from Cliente where DNI = '$dni';";
+    $sql_cliente = "SELECT DNI, nombre, email, fecha_alta from Cliente where DNI = '$dni';";
     $lerroak_cliente = mysqli_query($konexioa, $sql_cliente);
 
     // Comprobar si la consulta devolvió alguna fila
@@ -18,7 +18,8 @@ if (isset($_POST['bconalta'])){
         $nom_cliente = $info_cliente['nombre'];
         $dni_cliente = $info_cliente['DNI'];
         $mail_cliente = $info_cliente['email'];
-        $mensaje_exito = "ARRAKASTA! ".$nom_cliente." izeneko bezeroa, ".$dni_cliente." DNI-arekin eta ".$mail_cliente." mail-arekin gure datu basean erregistratuta dago. ";
+        $fecha_alta = $info_cliente['fecha_alta'];
+        $mensaje_exito = "ARRAKASTA! ".$nom_cliente." izeneko bezeroa, ".$dni_cliente." DNI-arekin eta ".$mail_cliente." mail-arekin gure datu basean erregistratuta dago ". $fecha_alta."-tik. ";
     } else {
         $mensaje_error = "ERROREA! Ez da ".$dni_cliente." DNI-a duen bezero bat aurkitu!";
     }
