@@ -8,7 +8,7 @@ if(isset($_POST['blogin'])){
     $user = $_POST['user'];
     $pass = $_POST['pass'];
 
-    try {
+    try { // Intenta conectarse con las credenciales proporcionadas en las credenciales 
         
     $konexioa = mysqli_connect(zerbitzaria, $user, $pass, db);
     mysqli_set_charset($konexioa, 'utf8');
@@ -17,7 +17,7 @@ if(isset($_POST['blogin'])){
         exit;
     } 
     catch(mysqli_sql_exception) {
-        $mensaje_error = "Erabiltzailea edo pasahitza txarto";
+        $mensaje_error = "Erabiltzailea edo pasahitza txarto"; // Si no lo consigue en vez de soltar tremendo error tye sale el mensaje de error que se especifica
     }
 }
 ?>

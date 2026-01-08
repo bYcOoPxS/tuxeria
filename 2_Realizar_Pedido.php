@@ -10,12 +10,13 @@ mysqli_set_charset($konexioa, 'utf8');
 $sql_pizzas = "SELECT nom_pizza, precio FROM Pizza";
 $lerroak_pizza = mysqli_query($konexioa, $sql_pizzas);
 
-$precios = [];
-$safe_to_orig = [];
+$precios = []; // Asociaremos los precios con los nombres de las pizzas
+$safe_to_orig = []; // Creamos array que usaremos para pasar los nombres de las pizzas sin espacios ni caracteres especiales a sus nombres originales
 
 while($apizza = mysqli_fetch_assoc($lerroak_pizza)){
     $nom_pizza = $apizza['nom_pizza'];
     $precio = $apizza['precio'];
+
     $safe_name = str_replace(' ', '_', $nom_pizza);
     $precios[$nom_pizza] = $precio;
     $safe_to_orig[$safe_name] = $nom_pizza;
@@ -37,22 +38,23 @@ if (isset($_POST['brpedido'])){
     // Resumen del pedido centrado y con clase
     $resumenPedido = "<div class='resumen-pedido'>";
 
-    foreach ($_POST as $valorname => $cantidad){
-        if ($valorname == 'dni' || $valorname == 'brpedido') continue;
-        if (!isset($safe_to_orig[$valorname])) continue;
+    foreach ($_POST as $valorname => $cantidad){ // Para cada valor enviado por post
+        if ($valorname == 'dni' || $valorname == 'brpedido') continue; // Si el valor es dni o brpedido (boton) continuar
+        if (!isset($safe_to_orig[$valorname])) continue; // Ignoramos si no es un nombre de pizza válido
 
         $cantidad_int = intval($cantidad);
-        if ($cantidad_int <= 0) continue;
+        if ($cantidad_int <= 0) continue; // Si la cantidad es 0 (no ha pedid un tipo de pizza) ignoramos tambien
 
-        $nom_original = $safe_to_orig[$valorname];
-        $importe += $precios[$nom_original] * $cantidad_int;
+        $nom_original = $safe_to_orig[$valorname]; // Recuperamos el nombre original de la pizza
+        $importe += $precios[$nom_original] * $cantidad_int; // Sumamos al importe total
 
+        // Añadimos esta línea al array de líneas del pedido
         $lineasPedido[] = [
             'nom_pizza' => $nom_original,
             'cantidad'  => $cantidad_int
         ];
 
-        // Añadimos al resumen con <br>
+        // Insertamos el resumen de pedido
         $resumenPedido .= "$nom_original ({$precios[$nom_original]} €) × $cantidad_int<br>";
     }
 
@@ -61,10 +63,10 @@ if (isset($_POST['brpedido'])){
     // Insertamos pedido en la tabla Pedido
     $sql_insert_pedido = "INSERT into Pedido (dni_cliente, importe) values ('$dni', $importe);";
     $lerroak_pedido = mysqli_query($konexioa, $sql_insert_pedido);
-    $pedido_id = mysqli_insert_id($konexioa);
+    $pedido_id = mysqli_insert_id($konexioa); // Sacamos el ID del pedido para despues insertarlo en LineaPedido
 
     // Insertamos las líneas del pedido
-    foreach ($lineasPedido as $linea) {
+    foreach ($lineasPedido as $linea) { // Para cada linea de pedido sacamos los datos que queremos y hacemos el insert
         $nom_pizza = $linea['nom_pizza'];
         $cantidad  = $linea['cantidad'];
         $sql_insert_lineapedido = "
@@ -75,7 +77,7 @@ if (isset($_POST['brpedido'])){
     }
 
     // Mensaje de éxito con resumen y total
-    if($lerroak_pedido){
+    if($lerroak_pedido){ // Si se ejecuta con exito la query de lineapedido, muestra mensaje de error y el resumen
         $mensaje_exito = "
             Eskaera gure chef-ari ailegatu zaio $nombre<br><br>
             <strong>Eskaeraren laburpena:</strong><br>
@@ -83,7 +85,7 @@ if (isset($_POST['brpedido'])){
             <strong>Eskaeraren prezio finala:</strong> $importe €
         ";
     } else {
-        $mensaje_error = "Eskaera errore bat izan du!!!";
+        $mensaje_error = "Eskaera errore bat izan du!!!"; // Si no es asi, mensaje de error
     }
 }
 ?>
@@ -113,7 +115,7 @@ if (isset($_POST['brpedido'])){
             <input type="text" name="dni" id="rpedido-dni" required>
 
             <?php
-            foreach ($safe_to_orig as $safe_name => $nom_original){
+            foreach ($safe_to_orig as $safe_name => $nom_original){ // Insertar nombres de las pizzas con el valor siendo el nombre sin espacios y el nombre que sale por pantalla que sea el "original"
                 $precio = $precios[$nom_original];
                 echo "<div class='pizza-item'>";
                 echo "<label for='$safe_name'>$nom_original ($precio €)</label>";

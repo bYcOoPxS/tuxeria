@@ -13,7 +13,7 @@ if (isset($_POST['bconalta'])){
     $lerroak_cliente = mysqli_query($konexioa, $sql_cliente);
 
     // Comprobar si la consulta devolvió alguna fila
-    if ($lerroak_cliente && mysqli_num_rows($lerroak_cliente) > 0) {
+    if ($lerroak_cliente && mysqli_num_rows($lerroak_cliente) > 0) { // Si la consulta se ha ejecutado correctamente y el numero de columnas que se devuelven es mayor que 0
         $info_cliente = mysqli_fetch_assoc($lerroak_cliente);
         $nom_cliente = $info_cliente['nombre'];
         $dni_cliente = $info_cliente['DNI'];
